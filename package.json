@@ -17,6 +17,8 @@
   ],
   "scripts": {
     "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -24,7 +26,8 @@
   },
   "devDependencies": {
     "@opencode-ai/plugin": "latest",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.2"
   },
   "keywords": [
     "opencode",
