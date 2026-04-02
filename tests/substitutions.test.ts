@@ -61,14 +61,14 @@ describe("substitution arrays", () => {
   });
 
   it("rocket emoji 🚀 is correctly encoded in EMOJIS", () => {
-    const rocket = EMOJIS.find(([k]) => k === "\u{1F680}");
+    const rocket = EMOJIS.find(([k]) => k === "🚀");
     expect(rocket).toBeDefined();
     expect(rocket![0]).toBe("🚀");
     expect(rocket![1]).toBe("[>>]");
   });
 
   it("light bulb emoji 💡 is correctly encoded in EMOJIS", () => {
-    const bulb = EMOJIS.find(([k]) => k === "\u{1F4A1}");
+    const bulb = EMOJIS.find(([k]) => k === "💡");
     expect(bulb).toBeDefined();
     expect(bulb![0]).toBe("💡");
   });
@@ -83,38 +83,38 @@ describe("buildSubstitutions", () => {
     const subs = buildSubstitutions({});
     const fromSet = new Set(subs.map(([k]) => k));
     // Should contain entries from every category
-    expect(fromSet.has("\u2014")).toBe(true); // em dash -- PUNCTUATION
-    expect(fromSet.has("\u2192")).toBe(true); // arrow ->  ARROWS
-    expect(fromSet.has("\u2260")).toBe(true); // !=        MATH
-    expect(fromSet.has("\u{1F680}")).toBe(true); // 🚀    EMOJIS
+    expect(fromSet.has("—")).toBe(true); // em dash -- PUNCTUATION
+    expect(fromSet.has("→")).toBe(true); // arrow ->  ARROWS
+    expect(fromSet.has("≠")).toBe(true); // !=        MATH
+    expect(fromSet.has("🚀")).toBe(true); // 🚀       EMOJIS
   });
 
   it("respects punctuation: false", () => {
     const subs = buildSubstitutions({ punctuation: false });
     const fromSet = new Set(subs.map(([k]) => k));
-    expect(fromSet.has("\u2014")).toBe(false); // em dash excluded
-    expect(fromSet.has("\u2192")).toBe(true); // arrows still in
+    expect(fromSet.has("—")).toBe(false); // em dash excluded
+    expect(fromSet.has("→")).toBe(true); // arrows still in
   });
 
   it("respects arrows: false", () => {
     const subs = buildSubstitutions({ arrows: false });
     const fromSet = new Set(subs.map(([k]) => k));
-    expect(fromSet.has("\u2192")).toBe(false);
-    expect(fromSet.has("\u2014")).toBe(true);
+    expect(fromSet.has("→")).toBe(false);
+    expect(fromSet.has("—")).toBe(true);
   });
 
   it("respects math: false", () => {
     const subs = buildSubstitutions({ math: false });
     const fromSet = new Set(subs.map(([k]) => k));
-    expect(fromSet.has("\u2260")).toBe(false);
-    expect(fromSet.has("\u2014")).toBe(true);
+    expect(fromSet.has("≠")).toBe(false);
+    expect(fromSet.has("—")).toBe(true);
   });
 
   it("respects emojis: false", () => {
     const subs = buildSubstitutions({ emojis: false });
     const fromSet = new Set(subs.map(([k]) => k));
-    expect(fromSet.has("\u{1F680}")).toBe(false);
-    expect(fromSet.has("\u2014")).toBe(true);
+    expect(fromSet.has("🚀")).toBe(false);
+    expect(fromSet.has("—")).toBe(true);
   });
 
   it("returns empty array when all categories disabled", () => {
@@ -140,14 +140,14 @@ describe("buildRegex", () => {
   });
 
   it("matches characters from the substitution set", () => {
-    const subs: Array<[string, string]> = [["\u2014", "--"]];
+    const subs: Array<[string, string]> = [["—", "--"]];
     const regex = buildRegex(subs);
-    expect("\u2014".match(regex)).not.toBeNull();
+    expect("—".match(regex)).not.toBeNull();
     expect("hello".match(regex)).toBeNull();
   });
 
   it("matches supplementary plane emoji correctly", () => {
-    const subs: Array<[string, string]> = [["\u{1F680}", "[>>]"]];
+    const subs: Array<[string, string]> = [["🚀", "[>>]"]];
     const regex = buildRegex(subs);
     expect("launch 🚀 now".match(regex)).not.toBeNull();
   });
@@ -168,41 +168,41 @@ describe("applySubstitutions", () => {
   }
 
   it("replaces em dash with double hyphen", () => {
-    const sub = makeEngine([["\u2014", "--"]]);
-    expect(sub("foo \u2014 bar")).toBe("foo -- bar");
+    const sub = makeEngine([["—", "--"]]);
+    expect(sub("foo — bar")).toBe("foo -- bar");
   });
 
   it("replaces right arrow", () => {
-    const sub = makeEngine([["\u2192", "->"]]);
-    expect(sub("go \u2192 next")).toBe("go -> next");
+    const sub = makeEngine([["→", "->"]]);
+    expect(sub("go → next")).toBe("go -> next");
   });
 
   it("replaces not-equal sign", () => {
-    const sub = makeEngine([["\u2260", "!="]]);
-    expect(sub("x \u2260 y")).toBe("x != y");
+    const sub = makeEngine([["≠", "!="]]);
+    expect(sub("x ≠ y")).toBe("x != y");
   });
 
   it("replaces rocket emoji (supplementary plane)", () => {
-    const sub = makeEngine([["\u{1F680}", "[>>]"]]);
-    expect(sub("launch \u{1F680} now")).toBe("launch [>>] now");
+    const sub = makeEngine([["🚀", "[>>]"]]);
+    expect(sub("launch 🚀 now")).toBe("launch [>>] now");
   });
 
   it("replaces multiple different characters in one pass", () => {
     const sub = makeEngine([
-      ["\u2014", "--"],
-      ["\u2192", "->"],
-      ["\u{1F680}", "[>>]"],
+      ["—", "--"],
+      ["→", "->"],
+      ["🚀", "[>>]"],
     ]);
-    expect(sub("\u2014 \u2192 \u{1F680}")).toBe("-- -> [>>]");
+    expect(sub("— → 🚀")).toBe("-- -> [>>]");
   });
 
   it("leaves unrecognised characters untouched", () => {
-    const sub = makeEngine([["\u2014", "--"]]);
+    const sub = makeEngine([["—", "--"]]);
     expect(sub("hello world")).toBe("hello world");
   });
 
   it("handles empty string", () => {
-    const sub = makeEngine([["\u2014", "--"]]);
+    const sub = makeEngine([["—", "--"]]);
     expect(sub("")).toBe("");
   });
 
@@ -216,12 +216,12 @@ describe("applySubstitutions", () => {
   });
 
   it("handles repeated substitution calls with the same regex (lastIndex reset)", () => {
-    const pairs: Array<[string, string]> = [["\u2014", "--"]];
+    const pairs: Array<[string, string]> = [["—", "--"]];
     const map = new Map<string, string>(pairs);
     const regex = buildRegex(pairs);
     for (let i = 0; i < 5; i++) {
       regex.lastIndex = 0;
-      expect(applySubstitutions("a \u2014 b", regex, map)).toBe("a -- b");
+      expect(applySubstitutions("a — b", regex, map)).toBe("a -- b");
     }
   });
 });
@@ -236,7 +236,7 @@ describe("full pipeline", () => {
     const map = new Map<string, string>(subs);
     const regex = buildRegex(subs);
 
-    const input = "dash \u2014 arrow \u2192 not-equal \u2260 rocket \u{1F680}";
+    const input = "dash — arrow → not-equal ≠ rocket 🚀";
     regex.lastIndex = 0;
     const result = applySubstitutions(input, regex, map);
     expect(result).toBe("dash -- arrow -> not-equal != rocket [>>]");
@@ -252,13 +252,13 @@ describe("full pipeline", () => {
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2014", "--"], // em dash
-      ["\u2013", "-"], // en dash
-      ["\u2026", "..."], // ellipsis
-      ["\u201C", '"'], // left double quotation mark
-      ["\u201D", '"'], // right double quotation mark
-      ["\u2018", "'"], // left single quotation mark
-      ["\u2019", "'"], // right single quotation mark
+      ["—", "--"], // em dash
+      ["–", "-"], // en dash
+      ["…", "..."], // ellipsis
+      ["\u201C", '"'], // left double quotation mark (")
+      ["\u201D", '"'], // right double quotation mark (")
+      ["\u2018", "'"], // left single quotation mark (')
+      ["\u2019", "'"], // right single quotation mark (')
     ];
 
     for (const [unicode, ascii] of cases) {
@@ -277,10 +277,10 @@ describe("full pipeline", () => {
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2192", "->"], // rightwards arrow
-      ["\u2190", "<-"], // leftwards arrow
-      ["\u2194", "<->"], // left right arrow
-      ["\u21D2", "=>"], // rightwards double arrow
+      ["→", "->"], // rightwards arrow
+      ["←", "<-"], // leftwards arrow
+      ["↔", "<->"], // left right arrow
+      ["⇒", "=>"], // rightwards double arrow
     ];
 
     for (const [unicode, ascii] of cases) {
@@ -299,11 +299,11 @@ describe("full pipeline", () => {
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2260", "!="], // not equal
-      ["\u2264", "<="], // less-than or equal
-      ["\u2265", ">="], // greater-than or equal
-      ["\u00D7", "*"], // multiplication
-      ["\u00F7", "/"], // division
+      ["≠", "!="], // not equal
+      ["≤", "<="], // less-than or equal
+      ["≥", ">="], // greater-than or equal
+      ["×", "*"], // multiplication
+      ["÷", "/"], // division
     ];
 
     for (const [unicode, ascii] of cases) {
