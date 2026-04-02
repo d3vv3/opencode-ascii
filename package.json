@@ -1,0 +1,32 @@
+{
+  "name": "opencode-ascii",
+  "version": "0.1.0",
+  "description": "OpenCode plugin that substitutes unicode characters with ASCII equivalents in AI responses and file edits",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": ">=1.0.0"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "latest",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "ascii",
+    "unicode"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d3vv3/opencode-ascii.git"
+  }
+}
