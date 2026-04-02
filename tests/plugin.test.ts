@@ -17,29 +17,45 @@ async function makeHooks(options?: PluginOptions): Promise<Hooks> {
 describe("experimental.text.complete hook", () => {
   it("substitutes unicode in AI text output", async () => {
     const hooks = await makeHooks();
-    const output = { text: "The result is \u2260 0 and we use \u2192 to indicate flow." };
-    await hooks["experimental.text.complete"]?.({ sessionID: "s1", messageID: "m1", partID: "p1" }, output);
-    expect(output.text).toBe("The result is != 0 and we use -> to indicate flow.");
+    const output = {
+      text: "The result is \u2260 0 and we use \u2192 to indicate flow.",
+    };
+    await hooks["experimental.text.complete"]?.(
+      { sessionID: "s1", messageID: "m1", partID: "p1" },
+      output,
+    );
+    expect(output.text).toBe(
+      "The result is != 0 and we use -> to indicate flow.",
+    );
   });
 
   it("substitutes emoji in AI text output", async () => {
     const hooks = await makeHooks();
     const output = { text: "Deployed \u{1F680} successfully!" };
-    await hooks["experimental.text.complete"]?.({ sessionID: "s1", messageID: "m1", partID: "p1" }, output);
+    await hooks["experimental.text.complete"]?.(
+      { sessionID: "s1", messageID: "m1", partID: "p1" },
+      output,
+    );
     expect(output.text).toBe("Deployed [>>] successfully!");
   });
 
   it("leaves plain ASCII unchanged", async () => {
     const hooks = await makeHooks();
     const output = { text: "hello -> world != foo" };
-    await hooks["experimental.text.complete"]?.({ sessionID: "s1", messageID: "m1", partID: "p1" }, output);
+    await hooks["experimental.text.complete"]?.(
+      { sessionID: "s1", messageID: "m1", partID: "p1" },
+      output,
+    );
     expect(output.text).toBe("hello -> world != foo");
   });
 
   it("skips substitution when emojis disabled", async () => {
     const hooks = await makeHooks({ emojis: false });
     const output = { text: "rocket \u{1F680} and dash \u2014" };
-    await hooks["experimental.text.complete"]?.({ sessionID: "s1", messageID: "m1", partID: "p1" }, output);
+    await hooks["experimental.text.complete"]?.(
+      { sessionID: "s1", messageID: "m1", partID: "p1" },
+      output,
+    );
     expect(output.text).toBe("rocket \u{1F680} and dash --"); // emoji kept, dash replaced
   });
 });
@@ -53,21 +69,30 @@ describe("tool.execute.before: write", () => {
 
   it("substitutes unicode in args.content", async () => {
     const hooks = await makeHooks();
-    const output = { args: { filePath: "/tmp/test.txt", content: "value \u2260 0 \u2192 result" } };
+    const output = {
+      args: {
+        filePath: "/tmp/test.txt",
+        content: "value \u2260 0 \u2192 result",
+      },
+    };
     await hooks["tool.execute.before"]?.(baseInput, output);
     expect(output.args.content).toBe("value != 0 -> result");
   });
 
   it("substitutes emoji in args.content", async () => {
     const hooks = await makeHooks();
-    const output = { args: { filePath: "/tmp/test.txt", content: "launch \u{1F680} ready" } };
+    const output = {
+      args: { filePath: "/tmp/test.txt", content: "launch \u{1F680} ready" },
+    };
     await hooks["tool.execute.before"]?.(baseInput, output);
     expect(output.args.content).toBe("launch [>>] ready");
   });
 
   it("does not modify filePath", async () => {
     const hooks = await makeHooks();
-    const output = { args: { filePath: "/tmp/test\u2014path.txt", content: "hello" } };
+    const output = {
+      args: { filePath: "/tmp/test\u2014path.txt", content: "hello" },
+    };
     await hooks["tool.execute.before"]?.(baseInput, output);
     // filePath should NOT be touched
     expect(output.args.filePath).toBe("/tmp/test\u2014path.txt");
@@ -97,7 +122,13 @@ describe("tool.execute.before: edit", () => {
 
   it("substitutes emoji in args.newString", async () => {
     const hooks = await makeHooks();
-    const output = { args: { filePath: "/tmp/f.txt", oldString: "x", newString: "fire \u{1F525}" } };
+    const output = {
+      args: {
+        filePath: "/tmp/f.txt",
+        oldString: "x",
+        newString: "fire \u{1F525}",
+      },
+    };
     await hooks["tool.execute.before"]?.(baseInput, output);
     expect(output.args.newString).toBe("fire [fire]");
   });
@@ -131,7 +162,12 @@ describe("tool.execute.before: multiedit", () => {
     const output = {
       args: {
         filePath: "/tmp/test.txt",
-        edits: [{ oldString: "must \u2260 change", newString: "changed \u2260 value" }],
+        edits: [
+          {
+            oldString: "must \u2260 change",
+            newString: "changed \u2260 value",
+          },
+        ],
       },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
@@ -142,7 +178,9 @@ describe("tool.execute.before: multiedit", () => {
   it("handles empty edits array gracefully", async () => {
     const hooks = await makeHooks();
     const output = { args: { filePath: "/tmp/test.txt", edits: [] } };
-    await expect(hooks["tool.execute.before"]?.(baseInput, output)).resolves.not.toThrow();
+    await expect(
+      hooks["tool.execute.before"]?.(baseInput, output),
+    ).resolves.not.toThrow();
   });
 });
 
@@ -157,7 +195,8 @@ describe("tool.execute.before: apply_patch", () => {
     const hooks = await makeHooks();
     const output = {
       args: {
-        patchText: "--- a/file.txt\n+++ b/file.txt\n@@ -1 +1 @@\n-old\n+new \u2192 value",
+        patchText:
+          "--- a/file.txt\n+++ b/file.txt\n@@ -1 +1 @@\n-old\n+new \u2192 value",
       },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
@@ -182,14 +221,20 @@ describe("tool.execute.before: unhandled tools", () => {
   it("does nothing for bash tool", async () => {
     const hooks = await makeHooks();
     const output = { args: { command: "echo \u2014" } };
-    await hooks["tool.execute.before"]?.({ tool: "bash", sessionID: "s1", callID: "c1" }, output);
+    await hooks["tool.execute.before"]?.(
+      { tool: "bash", sessionID: "s1", callID: "c1" },
+      output,
+    );
     expect(output.args.command).toBe("echo \u2014"); // unchanged
   });
 
   it("does nothing for read tool", async () => {
     const hooks = await makeHooks();
     const output = { args: { filePath: "/tmp/file \u2014.txt" } };
-    await hooks["tool.execute.before"]?.({ tool: "read", sessionID: "s1", callID: "c1" }, output);
+    await hooks["tool.execute.before"]?.(
+      { tool: "read", sessionID: "s1", callID: "c1" },
+      output,
+    );
     expect(output.args.filePath).toBe("/tmp/file \u2014.txt"); // unchanged
   });
 });
@@ -200,16 +245,29 @@ describe("tool.execute.before: unhandled tools", () => {
 
 describe("plugin options", () => {
   it("returns empty hooks when all categories disabled", async () => {
-    const hooks = await makeHooks({ punctuation: false, arrows: false, math: false, emojis: false });
+    const hooks = await makeHooks({
+      punctuation: false,
+      arrows: false,
+      math: false,
+      emojis: false,
+    });
     // Hooks should be empty (no keys registered)
     expect(hooks["experimental.text.complete"]).toBeUndefined();
     expect(hooks["tool.execute.before"]).toBeUndefined();
   });
 
   it("only applies enabled categories", async () => {
-    const hooks = await makeHooks({ punctuation: true, arrows: false, math: false, emojis: false });
+    const hooks = await makeHooks({
+      punctuation: true,
+      arrows: false,
+      math: false,
+      emojis: false,
+    });
     const output = { text: "dash \u2014 arrow \u2192 not-equal \u2260" };
-    await hooks["experimental.text.complete"]?.({ sessionID: "s1", messageID: "m1", partID: "p1" }, output);
+    await hooks["experimental.text.complete"]?.(
+      { sessionID: "s1", messageID: "m1", partID: "p1" },
+      output,
+    );
     // Only punctuation substituted; arrows and math left alone
     expect(output.text).toBe("dash -- arrow \u2192 not-equal \u2260");
   });

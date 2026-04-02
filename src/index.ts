@@ -39,7 +39,10 @@ function resolveConfig(options?: PluginOptions): SubstitutionConfig {
  *  - `experimental.text.complete` : rewrites completed AI text parts
  *  - `tool.execute.before`        : rewrites `write`, `edit`, `multiedit`, and `apply_patch` tool arguments
  */
-export const AsciiPlugin: Plugin = async (_ctx: PluginInput, options?: PluginOptions) => {
+export const AsciiPlugin: Plugin = async (
+  _ctx: PluginInput,
+  options?: PluginOptions,
+) => {
   const config = resolveConfig(options);
   const substitutions = buildSubstitutions(config);
 

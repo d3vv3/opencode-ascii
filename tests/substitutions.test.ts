@@ -93,7 +93,7 @@ describe("buildSubstitutions", () => {
     const subs = buildSubstitutions({ punctuation: false });
     const fromSet = new Set(subs.map(([k]) => k));
     expect(fromSet.has("\u2014")).toBe(false); // em dash excluded
-    expect(fromSet.has("\u2192")).toBe(true);  // arrows still in
+    expect(fromSet.has("\u2192")).toBe(true); // arrows still in
   });
 
   it("respects arrows: false", () => {
@@ -118,7 +118,12 @@ describe("buildSubstitutions", () => {
   });
 
   it("returns empty array when all categories disabled", () => {
-    const subs = buildSubstitutions({ punctuation: false, arrows: false, math: false, emojis: false });
+    const subs = buildSubstitutions({
+      punctuation: false,
+      arrows: false,
+      math: false,
+      emojis: false,
+    });
     expect(subs.length).toBe(0);
   });
 });
@@ -238,18 +243,22 @@ describe("full pipeline", () => {
   });
 
   it("PUNCTUATION: covers the most common cases", () => {
-    const subs = buildSubstitutions({ arrows: false, math: false, emojis: false });
+    const subs = buildSubstitutions({
+      arrows: false,
+      math: false,
+      emojis: false,
+    });
     const map = new Map<string, string>(subs);
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2014", "--"],   // em dash
-      ["\u2013", "-"],    // en dash
-      ["\u2026", "..."],  // ellipsis
-      ["\u201C", '"'],    // left double quotation mark
-      ["\u201D", '"'],    // right double quotation mark
-      ["\u2018", "'"],    // left single quotation mark
-      ["\u2019", "'"],    // right single quotation mark
+      ["\u2014", "--"], // em dash
+      ["\u2013", "-"], // en dash
+      ["\u2026", "..."], // ellipsis
+      ["\u201C", '"'], // left double quotation mark
+      ["\u201D", '"'], // right double quotation mark
+      ["\u2018", "'"], // left single quotation mark
+      ["\u2019", "'"], // right single quotation mark
     ];
 
     for (const [unicode, ascii] of cases) {
@@ -259,15 +268,19 @@ describe("full pipeline", () => {
   });
 
   it("ARROWS: covers common arrow characters", () => {
-    const subs = buildSubstitutions({ punctuation: false, math: false, emojis: false });
+    const subs = buildSubstitutions({
+      punctuation: false,
+      math: false,
+      emojis: false,
+    });
     const map = new Map<string, string>(subs);
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2192", "->"],   // rightwards arrow
-      ["\u2190", "<-"],   // leftwards arrow
-      ["\u2194", "<->"],  // left right arrow
-      ["\u21D2", "=>"],   // rightwards double arrow
+      ["\u2192", "->"], // rightwards arrow
+      ["\u2190", "<-"], // leftwards arrow
+      ["\u2194", "<->"], // left right arrow
+      ["\u21D2", "=>"], // rightwards double arrow
     ];
 
     for (const [unicode, ascii] of cases) {
@@ -277,16 +290,20 @@ describe("full pipeline", () => {
   });
 
   it("MATH: covers key math symbols", () => {
-    const subs = buildSubstitutions({ punctuation: false, arrows: false, emojis: false });
+    const subs = buildSubstitutions({
+      punctuation: false,
+      arrows: false,
+      emojis: false,
+    });
     const map = new Map<string, string>(subs);
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["\u2260", "!="],   // not equal
-      ["\u2264", "<="],   // less-than or equal
-      ["\u2265", ">="],   // greater-than or equal
-      ["\u00D7", "*"],    // multiplication
-      ["\u00F7", "/"],    // division
+      ["\u2260", "!="], // not equal
+      ["\u2264", "<="], // less-than or equal
+      ["\u2265", ">="], // greater-than or equal
+      ["\u00D7", "*"], // multiplication
+      ["\u00F7", "/"], // division
     ];
 
     for (const [unicode, ascii] of cases) {
