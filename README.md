@@ -97,20 +97,22 @@ All four substitution categories are **enabled by default**. Disable any categor
 | Unicode | Character | ASCII |
 |---------|-----------|-------|
 | U+2713  | ✓ | `[x]` |
-| U+274C  |  | `[!]` |
-| U+26A0  |  | `[!]` |
-| U+2139  |  | `[i]` |
-| U+2B50  |  | `[*]` |
-| U+1F525 |  | `[fire]` |
-| U+1F680 |  | `[>>]` |
-| U+1F41B |  | `[bug]` |
-| U+1F4DD |  | `[note]` |
-| U+1F512 |  | `[lock]` |
-| U+1F513 |  | `[open]` |
-| U+1F4C1 |  | `[dir]` |
-| U+1F4C4 |  | `[file]` |
-| U+1F44D |  | `[+1]` |
-| U+1F44E |  | `[-1]` |
+| U+274C  | ❌ | `[!]` |
+| U+26A0  | ⚠ | `[!]` |
+| U+2139  | ℹ | `[i]` |
+| U+2B50  | ⭐ | `[*]` |
+| U+1F525 | 🔥 | `[fire]` |
+| U+1F680 | 🚀 | `[>>]` |
+| U+1F41B | 🐛 | `[bug]` |
+| U+1F4DD | 📝 | `[note]` |
+| U+1F512 | 🔒 | `[lock]` |
+| U+1F513 | 🔓 | `[open]` |
+| U+1F4C1 | 📁 | `[dir]` |
+| U+1F4C4 | 📄 | `[file]` |
+| U+1F44D | 👍 | `[+1]` |
+| U+1F44E | 👎 | `[-1]` |
+
+and many more!
 
 See [`src/substitutions.ts`](src/substitutions.ts) for the full list.
 
