@@ -19,7 +19,7 @@ export type AsciiPluginOptions = SubstitutionConfig;
  *
  * Covered hooks:
  *  - `experimental.text.complete` : rewrites completed AI text parts
- *  - `tool.execute.before`        : rewrites `write` and `edit` tool arguments
+ *  - `tool.execute.before`        : rewrites `write`, `edit`, `multiedit`, and `apply_patch` tool arguments
  */
 export declare const AsciiPlugin: Plugin;
 export default AsciiPlugin;

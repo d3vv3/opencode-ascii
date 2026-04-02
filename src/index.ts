@@ -37,7 +37,7 @@ function resolveConfig(options?: PluginOptions): SubstitutionConfig {
  *
  * Covered hooks:
  *  - `experimental.text.complete` : rewrites completed AI text parts
- *  - `tool.execute.before`        : rewrites `write` and `edit` tool arguments
+ *  - `tool.execute.before`        : rewrites `write`, `edit`, `multiedit`, and `apply_patch` tool arguments
  */
 export const AsciiPlugin: Plugin = async (_ctx: PluginInput, options?: PluginOptions) => {
   const config = resolveConfig(options);
@@ -76,9 +76,10 @@ export const AsciiPlugin: Plugin = async (_ctx: PluginInput, options?: PluginOpt
      * Rewrite file-writing tool arguments before execution.
      *
      * Tools handled:
-     *  - `write`  : `args.content`
-     *  - `edit`   : `args.newString` (NOT `oldString` — it must match existing file content)
-     *  - `patch`  : `args.patch` (unified diff content)
+     *  - `write`       : `args.content`
+     *  - `edit`        : `args.newString` (NOT `oldString` -- it must match existing file content)
+     *  - `multiedit`   : each `args.edits[].newString`
+     *  - `apply_patch` : `args.patchText` (unified diff content)
      */
     "tool.execute.before": async (input, output) => {
       switch (input.tool) {
@@ -94,9 +95,19 @@ export const AsciiPlugin: Plugin = async (_ctx: PluginInput, options?: PluginOpt
           }
           break;
         }
-        case "patch": {
-          if (typeof output.args?.patch === "string") {
-            output.args.patch = substitute(output.args.patch);
+        case "multiedit": {
+          if (Array.isArray(output.args?.edits)) {
+            for (const edit of output.args.edits) {
+              if (typeof edit?.newString === "string") {
+                edit.newString = substitute(edit.newString);
+              }
+            }
+          }
+          break;
+        }
+        case "apply_patch": {
+          if (typeof output.args?.patchText === "string") {
+            output.args.patchText = substitute(output.args.patchText);
           }
           break;
         }
