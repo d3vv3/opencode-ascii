@@ -1,4 +1,4 @@
-name: Release
+name: Release and Publish
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
 
 permissions:
+  id-token: write   # Required for OIDC trusted publishing
   contents: write   # Required to create tags and releases
 
 jobs:
@@ -49,3 +50,25 @@ jobs:
               name: `v${version}`,
               generate_release_notes: true,
             });
+
+      - uses: actions/setup-node@v4
+        if: steps.version.outputs.changed == 'true'
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        if: steps.version.outputs.changed == 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.version.outputs.changed == 'true'
+        run: npm run build --if-present
+
+      - name: Test
+        if: steps.version.outputs.changed == 'true'
+        run: npm test --if-present
+
+      - name: Publish to npm
+        if: steps.version.outputs.changed == 'true'
+        run: npm publish
