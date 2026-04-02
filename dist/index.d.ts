@@ -1,5 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import { type SubstitutionConfig } from "./substitutions.js";
+import { type SubstitutionConfig } from "./substitutions";
 /**
  * Options accepted by AsciiPlugin.
  *
@@ -22,3 +22,4 @@ export type AsciiPluginOptions = SubstitutionConfig;
  *  - `tool.execute.before`        : rewrites `write` and `edit` tool arguments
  */
 export declare const AsciiPlugin: Plugin;
+export default AsciiPlugin;

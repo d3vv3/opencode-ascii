@@ -4,7 +4,7 @@ import {
   buildSubstitutions,
   buildRegex,
   applySubstitutions,
-} from "./substitutions.js";
+} from "./substitutions";
 
 /**
  * Options accepted by AsciiPlugin.
@@ -104,3 +104,5 @@ export const AsciiPlugin: Plugin = async (_ctx: PluginInput, options?: PluginOpt
     },
   };
 };
+
+export default AsciiPlugin;

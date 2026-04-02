@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AsciiPlugin = void 0;
-const substitutions_js_1 = require("./substitutions.js");
+import { buildSubstitutions, buildRegex, applySubstitutions, } from "./substitutions";
 function resolveConfig(options) {
     if (!options)
         return {};
@@ -24,9 +21,9 @@ function resolveConfig(options) {
  *  - `experimental.text.complete` : rewrites completed AI text parts
  *  - `tool.execute.before`        : rewrites `write` and `edit` tool arguments
  */
-const AsciiPlugin = async (_ctx, options) => {
+export const AsciiPlugin = async (_ctx, options) => {
     const config = resolveConfig(options);
-    const substitutions = (0, substitutions_js_1.buildSubstitutions)(config);
+    const substitutions = buildSubstitutions(config);
     if (substitutions.length === 0) {
         // All categories disabled — nothing to do.
         return {};
@@ -35,11 +32,11 @@ const AsciiPlugin = async (_ctx, options) => {
     // Reset regex lastIndex before reuse by always using a fresh call to
     // buildRegex; the 'g' flag is stateful so we rebuild per call or use
     // a factory. We build once and rely on String.prototype.replace resetting it.
-    const regex = (0, substitutions_js_1.buildRegex)(substitutions);
+    const regex = buildRegex(substitutions);
     function substitute(text) {
         // Reset the regex state (stateful with /g flag)
         regex.lastIndex = 0;
-        return (0, substitutions_js_1.applySubstitutions)(text, regex, map);
+        return applySubstitutions(text, regex, map);
     }
     return {
         /**
@@ -84,4 +81,4 @@ const AsciiPlugin = async (_ctx, options) => {
         },
     };
 };
-exports.AsciiPlugin = AsciiPlugin;
+export default AsciiPlugin;

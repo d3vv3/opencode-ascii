@@ -1,14 +1,8 @@
-"use strict";
 /**
  * Unicode → ASCII substitution mappings, organised by category.
  * Each entry is a tuple of [unicode, ascii].
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EMOJIS = exports.MATH = exports.ARROWS = exports.PUNCTUATION = void 0;
-exports.buildSubstitutions = buildSubstitutions;
-exports.buildRegex = buildRegex;
-exports.applySubstitutions = applySubstitutions;
-exports.PUNCTUATION = [
+export const PUNCTUATION = [
     // Dashes
     ["\u2014", "--"], // em dash (—)
     ["\u2013", "-"], // en dash (–)
@@ -39,7 +33,7 @@ exports.PUNCTUATION = [
     ["\u2032", "'"], // prime (′)
     ["\u2033", '"'], // double prime (″)
 ];
-exports.ARROWS = [
+export const ARROWS = [
     ["\u2192", "->"], // rightwards arrow (→)
     ["\u2190", "<-"], // leftwards arrow (←)
     ["\u2191", "^"], // upwards arrow (↑)
@@ -58,7 +52,7 @@ exports.ARROWS = [
     ["\u2B06", "^"], // upwards black arrow (⬆)
     ["\u2B07", "v"], // downwards black arrow (⬇)
 ];
-exports.MATH = [
+export const MATH = [
     ["\u2260", "!="], // not equal to (≠)
     ["\u2264", "<="], // less-than or equal to (≤)
     ["\u2265", ">="], // greater-than or equal to (≥)
@@ -86,7 +80,7 @@ exports.MATH = [
     ["\u2234", ":."], // therefore (∴)
     ["\u2235", ":'"], // because (∵)
 ];
-exports.EMOJIS = [
+export const EMOJIS = [
     // Checkmarks / cross marks
     ["\u2713", "[x]"], // check mark (✓)
     ["\u2714", "[x]"], // heavy check mark (✔)
@@ -163,24 +157,24 @@ const DEFAULT_CONFIG = {
 /**
  * Build a combined substitution map from enabled categories.
  */
-function buildSubstitutions(config = {}) {
+export function buildSubstitutions(config = {}) {
     const resolved = { ...DEFAULT_CONFIG, ...config };
     const entries = [];
     if (resolved.punctuation)
-        entries.push(...exports.PUNCTUATION);
+        entries.push(...PUNCTUATION);
     if (resolved.arrows)
-        entries.push(...exports.ARROWS);
+        entries.push(...ARROWS);
     if (resolved.math)
-        entries.push(...exports.MATH);
+        entries.push(...MATH);
     if (resolved.emojis)
-        entries.push(...exports.EMOJIS);
+        entries.push(...EMOJIS);
     return entries;
 }
 /**
  * Build a compiled RegExp that matches all active unicode characters at once.
  * This is much faster than running replace() N times.
  */
-function buildRegex(substitutions) {
+export function buildRegex(substitutions) {
     const pattern = substitutions
         .map(([ch]) => ch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
         .join("|");
@@ -189,6 +183,6 @@ function buildRegex(substitutions) {
 /**
  * Apply substitutions to a string using a pre-built map and regex.
  */
-function applySubstitutions(text, regex, map) {
+export function applySubstitutions(text, regex, map) {
     return text.replace(regex, (match) => map.get(match) ?? match);
 }
