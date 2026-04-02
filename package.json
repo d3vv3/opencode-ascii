@@ -1,6 +1,6 @@
 {
   "name": "opencode-ascii",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenCode plugin that substitutes unicode characters with ASCII equivalents in AI responses and file edits",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
