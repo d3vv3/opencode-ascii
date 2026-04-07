@@ -1,13 +1,13 @@
 # opencode-ascii
 
-An [OpenCode](https://opencode.ai) plugin that automatically substitutes unicode characters with ASCII equivalents in AI responses and file edits.
+An [OpenCode](https://opencode.ai) plugin that automatically substitutes unicode characters with ASCII-safe equivalents in AI responses and file edits.
 
 ## Why?
 
 LLMs love to reach for typographic characters — em-dashes, curly quotes, arrows, emoji — that look great in a browser but cause friction in terminals, code, config files, and plain-text tooling. This plugin intercepts output at two points:
 
 - **AI text responses** (`experimental.text.complete`) — rewrites text parts before they are stored.
-- **File write/edit tool calls** (`tool.execute.before`) — rewrites `write`, `edit`, and `patch` tool arguments before execution.
+- **File write/edit tool calls** (`tool.execute.before`) — rewrites `write`, `edit`, `multiedit`, and `apply_patch` tool arguments before execution.
 
 ## Installation
 
@@ -45,7 +45,7 @@ All four substitution categories are **enabled by default**. Disable any categor
 | `punctuation` | boolean | `true`  | Em/en dashes, ellipsis, curly/smart quotes   |
 | `arrows`      | boolean | `true`  | `→` → `->`, `←` → `<-`, `⇒` → `=>`, etc.  |
 | `math`        | boolean | `true`  | `≠` → `!=`, `≤` → `<=`, `×` → `*`, etc.   |
-| `emojis`      | boolean | `true`  | Common emoji → short ASCII labels            |
+| `emojis`      | boolean | `true`  | Common emoji -> `:shortcode:` labels         |
 
 ## Substitution reference
 
@@ -96,21 +96,21 @@ All four substitution categories are **enabled by default**. Disable any categor
 
 | Unicode | Character | ASCII |
 |---------|-----------|-------|
-| U+2713  | ✓ | `[x]` |
-| U+274C  | ❌ | `[!]` |
-| U+26A0  | ⚠ | `[!]` |
-| U+2139  | ℹ | `[i]` |
-| U+2B50  | ⭐ | `[*]` |
-| U+1F525 | 🔥 | `[fire]` |
-| U+1F680 | 🚀 | `[>>]` |
-| U+1F41B | 🐛 | `[bug]` |
-| U+1F4DD | 📝 | `[note]` |
-| U+1F512 | 🔒 | `[lock]` |
-| U+1F513 | 🔓 | `[open]` |
-| U+1F4C1 | 📁 | `[dir]` |
-| U+1F4C4 | 📄 | `[file]` |
-| U+1F44D | 👍 | `[+1]` |
-| U+1F44E | 👎 | `[-1]` |
+| U+2713  | ✓ | `:white_check_mark:` |
+| U+274C  | ❌ | `:x:` |
+| U+26A0  | ⚠ | `:warning:` |
+| U+2139  | ℹ | `:information_source:` |
+| U+2B50  | ⭐ | `:star:` |
+| U+1F525 | 🔥 | `:fire:` |
+| U+1F680 | 🚀 | `:rocket:` |
+| U+1F41B | 🐛 | `:bug:` |
+| U+1F4DD | 📝 | `:memo:` |
+| U+1F512 | 🔒 | `:lock:` |
+| U+1F513 | 🔓 | `:unlock:` |
+| U+1F4C1 | 📁 | `:file_folder:` |
+| U+1F4C4 | 📄 | `:page_facing_up:` |
+| U+1F44D | 👍 | `:+1:` |
+| U+1F44E | 👎 | `:-1:` |
 
 and many more!
 
@@ -125,7 +125,8 @@ The plugin uses two hooks:
 2. **`tool.execute.before`** — fired before any tool executes. The plugin rewrites:
    - `output.args.content` for the `write` tool
    - `output.args.newString` for the `edit` tool (never `oldString` — it must match existing file content exactly)
-   - `output.args.patch` for the `patch` tool
+   - each `output.args.edits[].newString` for the `multiedit` tool
+   - `output.args.patchText` for the `apply_patch` tool
 
 Substitution uses a single compiled regex built from all active mappings, so there is no O(n) string-replace loop per character.
 

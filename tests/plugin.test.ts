@@ -36,7 +36,7 @@ describe("experimental.text.complete hook", () => {
       { sessionID: "s1", messageID: "m1", partID: "p1" },
       output,
     );
-    expect(output.text).toBe("Deployed [>>] successfully!");
+    expect(output.text).toBe("Deployed :rocket: successfully!");
   });
 
   it("leaves plain ASCII unchanged", async () => {
@@ -85,7 +85,7 @@ describe("tool.execute.before: write", () => {
       args: { filePath: "/tmp/test.txt", content: "launch 🚀 ready" },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.content).toBe("launch [>>] ready");
+    expect(output.args.content).toBe("launch :rocket: ready");
   });
 
   it("does not modify filePath", async () => {
@@ -130,7 +130,7 @@ describe("tool.execute.before: edit", () => {
       },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.newString).toBe("fire [fire]");
+    expect(output.args.newString).toBe("fire :fire:");
   });
 });
 

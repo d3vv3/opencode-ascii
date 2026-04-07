@@ -64,7 +64,7 @@ describe("substitution arrays", () => {
     const rocket = EMOJIS.find(([k]) => k === "🚀");
     expect(rocket).toBeDefined();
     expect(rocket![0]).toBe("🚀");
-    expect(rocket![1]).toBe("[>>]");
+    expect(rocket![1]).toBe(":rocket:");
   });
 
   it("light bulb emoji 💡 is correctly encoded in EMOJIS", () => {
@@ -147,7 +147,7 @@ describe("buildRegex", () => {
   });
 
   it("matches supplementary plane emoji correctly", () => {
-    const subs: Array<[string, string]> = [["🚀", "[>>]"]];
+    const subs: Array<[string, string]> = [["🚀", ":rocket:"]];
     const regex = buildRegex(subs);
     expect("launch 🚀 now".match(regex)).not.toBeNull();
   });
@@ -183,17 +183,17 @@ describe("applySubstitutions", () => {
   });
 
   it("replaces rocket emoji (supplementary plane)", () => {
-    const sub = makeEngine([["🚀", "[>>]"]]);
-    expect(sub("launch 🚀 now")).toBe("launch [>>] now");
+    const sub = makeEngine([["🚀", ":rocket:"]]);
+    expect(sub("launch 🚀 now")).toBe("launch :rocket: now");
   });
 
   it("replaces multiple different characters in one pass", () => {
     const sub = makeEngine([
       ["—", "--"],
       ["→", "->"],
-      ["🚀", "[>>]"],
+      ["🚀", ":rocket:"],
     ]);
-    expect(sub("— → 🚀")).toBe("-- -> [>>]");
+    expect(sub("— → 🚀")).toBe("-- -> :rocket:");
   });
 
   it("leaves unrecognised characters untouched", () => {
@@ -239,7 +239,7 @@ describe("full pipeline", () => {
     const input = "dash — arrow → not-equal ≠ rocket 🚀";
     regex.lastIndex = 0;
     const result = applySubstitutions(input, regex, map);
-    expect(result).toBe("dash -- arrow -> not-equal != rocket [>>]");
+    expect(result).toBe("dash -- arrow -> not-equal != rocket :rocket:");
   });
 
   it("PUNCTUATION: covers the most common cases", () => {
