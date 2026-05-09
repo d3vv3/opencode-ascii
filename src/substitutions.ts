@@ -7,10 +7,10 @@ export type Category = "punctuation" | "arrows" | "math" | "emojis";
 
 export const PUNCTUATION: Array<[string, string]> = [
   // Dashes
-  ["\u2014", "--"], // em dash (—)
+  ["\u2014", "-"], // em dash (—)
   ["\u2013", "-"], // en dash (–)
   ["\u2012", "-"], // figure dash (‒)
-  ["\u2015", "--"], // horizontal bar (―)
+  ["\u2015", "-"], // horizontal bar (―)
   // Ellipsis
   ["\u2026", "..."], // horizontal ellipsis (…)
   // Curly / smart quotes — double
