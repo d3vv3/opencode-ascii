@@ -53,7 +53,7 @@ All four substitution categories are **enabled by default**. Disable any categor
 
 | Unicode | Character | ASCII |
 |---------|-----------|-------|
-| U+2014  | — | `--` |
+| U+2014  | — | `-` |
 | U+2013  | – | `-` |
 | U+2026  | … | `...` |
 | U+201C  | " | `"` |
