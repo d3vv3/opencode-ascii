@@ -239,7 +239,7 @@ describe("full pipeline", () => {
     const input = "dash — arrow → not-equal ≠ rocket 🚀";
     regex.lastIndex = 0;
     const result = applySubstitutions(input, regex, map);
-    expect(result).toBe("dash -- arrow -> not-equal != rocket :rocket:");
+    expect(result).toBe("dash - arrow -> not-equal != rocket :rocket:");
   });
 
   it("PUNCTUATION: covers the most common cases", () => {
@@ -252,7 +252,7 @@ describe("full pipeline", () => {
     const regex = buildRegex(subs);
 
     const cases: [string, string][] = [
-      ["—", "--"], // em dash
+      ["—", "-"], // em dash
       ["–", "-"], // en dash
       ["…", "..."], // ellipsis
       ["\u201C", '"'], // left double quotation mark (")

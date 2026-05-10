@@ -56,7 +56,7 @@ describe("experimental.text.complete hook", () => {
       { sessionID: "s1", messageID: "m1", partID: "p1" },
       output,
     );
-    expect(output.text).toBe("rocket 🚀 and dash --"); // emoji kept, dash replaced
+    expect(output.text).toBe("rocket 🚀 and dash -"); // emoji kept, dash replaced
   });
 });
 
@@ -116,7 +116,7 @@ describe("tool.execute.before: edit", () => {
       },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.newString).toBe("new -- value");
+    expect(output.args.newString).toBe("new - value");
     expect(output.args.oldString).toBe("old — value"); // unchanged
   });
 
@@ -153,7 +153,7 @@ describe("tool.execute.before: multiedit", () => {
       },
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.edits[0].newString).toBe("a -- b replaced");
+    expect(output.args.edits[0].newString).toBe("a - b replaced");
     expect(output.args.edits[1].newString).toBe("y -> z");
   });
 
@@ -269,6 +269,6 @@ describe("plugin options", () => {
       output,
     );
     // Only punctuation substituted; arrows and math left alone
-    expect(output.text).toBe("dash -- arrow → not-equal ≠");
+    expect(output.text).toBe("dash - arrow → not-equal ≠");
   });
 });
