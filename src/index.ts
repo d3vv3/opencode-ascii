@@ -37,7 +37,7 @@ function resolveConfig(options?: PluginOptions): SubstitutionConfig {
  *
  * Covered hooks:
  *  - `experimental.text.complete` : rewrites completed AI text parts
- *  - `tool.execute.before`        : rewrites `write`, `edit`, `multiedit`, and `apply_patch` tool arguments
+ *  - `tool.execute.before`        : rewrites `write`, `edit`, and `apply_patch` tool arguments
  */
 export const AsciiPlugin: Plugin = async (
   _ctx: PluginInput,
@@ -81,7 +81,6 @@ export const AsciiPlugin: Plugin = async (
      * Tools handled:
      *  - `write`       : `args.content`
      *  - `edit`        : `args.newString` (NOT `oldString` -- it must match existing file content)
-     *  - `multiedit`   : each `args.edits[].newString`
      *  - `apply_patch` : `args.patchText` (unified diff content)
      */
     "tool.execute.before": async (input, output) => {
@@ -98,16 +97,6 @@ export const AsciiPlugin: Plugin = async (
           }
           break;
         }
-        case "multiedit": {
-          if (Array.isArray(output.args?.edits)) {
-            for (const edit of output.args.edits) {
-              if (typeof edit?.newString === "string") {
-                edit.newString = substitute(edit.newString);
-              }
-            }
-          }
-          break;
-        }
         case "apply_patch": {
           if (typeof output.args?.patchText === "string") {
             output.args.patchText = substitute(output.args.patchText);
@@ -119,4 +108,7 @@ export const AsciiPlugin: Plugin = async (
   };
 };
 
-export default AsciiPlugin;
+export default {
+  id: "opencode-ascii",
+  server: AsciiPlugin,
+};

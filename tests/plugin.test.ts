@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import AsciiPlugin from "../src/index";
+import { describe, it, expect } from "vitest";
+import { AsciiPlugin } from "../src/index";
 import type { PluginInput, PluginOptions, Hooks } from "@opencode-ai/plugin";
 
 // Minimal stub satisfying the PluginInput type shape used by AsciiPlugin
@@ -131,56 +131,6 @@ describe("tool.execute.before: edit", () => {
     };
     await hooks["tool.execute.before"]?.(baseInput, output);
     expect(output.args.newString).toBe("fire :fire:");
-  });
-});
-
-// ---------------------------------------------------------------------------
-// tool.execute.before hook -- multiedit tool
-// ---------------------------------------------------------------------------
-
-describe("tool.execute.before: multiedit", () => {
-  const baseInput = { tool: "multiedit", sessionID: "s1", callID: "c1" };
-
-  it("substitutes unicode in each edit's newString", async () => {
-    const hooks = await makeHooks();
-    const output = {
-      args: {
-        filePath: "/tmp/test.txt",
-        edits: [
-          { oldString: "a — b", newString: "a — b replaced" },
-          { oldString: "x", newString: "y → z" },
-        ],
-      },
-    };
-    await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.edits[0].newString).toBe("a - b replaced");
-    expect(output.args.edits[1].newString).toBe("y -> z");
-  });
-
-  it("does not change oldString in any edit", async () => {
-    const hooks = await makeHooks();
-    const output = {
-      args: {
-        filePath: "/tmp/test.txt",
-        edits: [
-          {
-            oldString: "must ≠ change",
-            newString: "changed ≠ value",
-          },
-        ],
-      },
-    };
-    await hooks["tool.execute.before"]?.(baseInput, output);
-    expect(output.args.edits[0].oldString).toBe("must ≠ change"); // unchanged
-    expect(output.args.edits[0].newString).toBe("changed != value");
-  });
-
-  it("handles empty edits array gracefully", async () => {
-    const hooks = await makeHooks();
-    const output = { args: { filePath: "/tmp/test.txt", edits: [] } };
-    await expect(
-      hooks["tool.execute.before"]?.(baseInput, output),
-    ).resolves.not.toThrow();
   });
 });
 
