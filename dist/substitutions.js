@@ -25,7 +25,8 @@ export const PUNCTUATION = [
     ["\u2039", "'"], // single left-pointing angle quotation mark (‹)
     ["\u203A", "'"], // single right-pointing angle quotation mark (›)
     // Miscellaneous punctuation
-    ["\u2022", "-"], // bullet (•)
+    ["\u2500", "-"], // box drawings light horizontal (─)
+    ["\u2022", "-"], // bullet (-)
     ["\u2023", ">"], // triangular bullet (‣)
     ["\u2043", "-"], // hyphen bullet (⁃)
     ["\u00B7", "."], // middle dot (·)
