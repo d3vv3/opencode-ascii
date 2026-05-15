@@ -29,8 +29,10 @@ export const PUNCTUATION: Array<[string, string]> = [
   ["\u203A", "'"], // single right-pointing angle quotation mark (›)
   // Miscellaneous punctuation
   ["\u2500", "-"], // box drawings light horizontal (─)
+  ["\u2502", "|"], // box drawings light vertical (│)
   ["\u2022", "-"], // bullet (-)
   ["\u2023", ">"], // triangular bullet (‣)
+  ["\u25BA", ">"], // black right-pointing pointer (►)
   ["\u2043", "-"], // hyphen bullet (⁃)
   ["\u00B7", "."], // middle dot (·)
   ["\u2027", "."], // hyphenation point (‧)
@@ -56,6 +58,8 @@ export const ARROWS: Array<[string, string]> = [
   ["\u2B05", "<-"], // leftwards black arrow (⬅)
   ["\u2B06", "^"], // upwards black arrow (⬆)
   ["\u2B07", "v"], // downwards black arrow (⬇)
+  ["\u25BC", "v"], // black down-pointing triangle (▼)
+  ["\u25B2", "^"], // black up-pointing triangle (▲)
 ];
 
 export const MATH: Array<[string, string]> = [

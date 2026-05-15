@@ -259,6 +259,8 @@ describe("full pipeline", () => {
       ["\u201D", '"'], // right double quotation mark (")
       ["\u2018", "'"], // left single quotation mark (')
       ["\u2019", "'"], // right single quotation mark (')
+      ["\u2502", "|"], // box drawings light vertical (│)
+      ["\u25BA", ">"], // black right-pointing pointer (►)
     ];
 
     for (const [unicode, ascii] of cases) {
@@ -281,6 +283,8 @@ describe("full pipeline", () => {
       ["←", "<-"], // leftwards arrow
       ["↔", "<->"], // left right arrow
       ["⇒", "=>"], // rightwards double arrow
+      ["▼", "v"], // black down-pointing triangle
+      ["▲", "^"], // black up-pointing triangle
     ];
 
     for (const [unicode, ascii] of cases) {
